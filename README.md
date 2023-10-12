@@ -1,2 +1,2 @@
 # Shopping-App
-A shopping application made ASP .NET Core
+A shopping application made in ASP .NET Core
