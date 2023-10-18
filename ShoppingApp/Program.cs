@@ -30,6 +30,19 @@ builder.Services.AddDbContext<PieShopDBContext>(options =>
 
 var app = builder.Build();
 
+// Configure DBContext and apply any pending migrations
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<PieShopDBContext>();
+
+    var isMigrationPending = dbContext.Database.GetPendingMigrations().Any();
+
+    if (isMigrationPending)
+    {
+        dbContext.Database.Migrate();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
