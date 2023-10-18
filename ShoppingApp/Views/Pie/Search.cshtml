@@ -1,0 +1,56 @@
+
+<div class="my-5">
+    <h3 class="mb-4">
+        Enter your search query:
+    </h3>
+    <input id="txtPieName" type="text" />
+    <button id="searchButton" class="btn btn-secondary">Search</button>
+</div>
+
+<table id="tblPies" cellpadding="0" cellspacing="0">
+    <tr></tr>
+</table>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+      $("button").click(function(){
+        var searchQuery = $.trim($("#txtPieName").val());
+            $("table tbody").html("");
+            $.ajax({
+                type: "POST",
+                url: "/api/Search",
+                data: "\"" + searchQuery + "\"",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (pies) {
+                    var table = $("#tblPies");
+                    table.find("tr:not(:first)").remove();
+
+                    if (pies.length === 0) {
+                        var noResultsMessage = $("<tr><td colspan='3'>No results found</td></tr>");
+                        table.find("tbody").append(noResultsMessage);
+                    }
+                    else {
+                        $.each(pies, function (i, pie) {
+                        $("tbody").append($("<tr>"));
+                        appendElement = $("tbody tr").last();
+                        appendElement.append($("<td>").html('<img src=' + pie.imageThumbnailUrl + '>'));
+                        appendElement.append($("<td>").html('<a href="/pie/details/' + pie.pieId + '">' + pie.name + '</a>'));
+                        appendElement.append($("<td>").html('₹' + pie.price));
+                        });
+
+                        setTimeout(function() {
+                            $("tbody").css("padding", "0.5rem");
+                        }, 1000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                        console.log(xhr)
+                }
+            });
+          });
+        });
+
+</script>
